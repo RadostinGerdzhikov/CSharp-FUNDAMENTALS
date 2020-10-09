@@ -4,67 +4,90 @@ namespace IntroUI {
   using System.Data;
   using System.Linq;
   using System.Text;
+  using System.Threading;
   using System;
 
   public class Program {
-
     public static void Main () {
-       //05 - Square with Maximum Sum
 
-      int[] dimensions = ParseArrayFromConsole(',',' ');  
+      int[] dimensions = ParseArrayFromConsole(',',' ');
       int rows = dimensions[0];
       int cols = dimensions[1];
 
-      int[,] matrix = new int[rows,cols];
+      int[,] matrix = new int[rows, cols];
 
-      for (int row = 0; row  matrix.GetLength(0) ; row++)
+      for (int row = 0; row < matrix.GetLength(0); row++)
       {
-          int[] currentRow = ParseArrayFromConsole(',',' '); 
-          for (int col = 0; col  matrix.GetLength(1); col++)
-          {
-              matrix[row,col] = currentRow[col];
-          }
-      } 
-    
-         
-
-         int biggestSum = int.MinValue;
-         int bigRow = 0;
-         int bigCol = 0;
-
-         for (int row = 0; row  matrix.GetLength(0) - 1; row++)
+         int[] currentRow = ParseArrayFromConsole(',', ' '); 
+         for (int col = 0; col < matrix.GetLength(1); col++)
          {
-             for (int col = 0; col  matrix.GetLength(1) - 1; col++)
-             {
-                int currentSum = matrix[row, col] 
-                               + matrix[row, col + 1]
-                               + matrix [row + 1, col]
-                               + matrix [row + 1, col + 1];
+             matrix[row,col] = currentRow[col];
+         } 
+      }  
+     // read matrix
+       
+      //  for (int row = 0; row < matrix.GetLength(0); row++)
+      //  {
+      //      for (int col = 0; col < matrix.GetLength(1); col++)
+      //      {
+      //          Console.Write(matrix[row, col] + " ");
+      //      }
+      //    Console.WriteLine();
+      //  }
+
+      int subMatrixRows = 2;
+      int subMatrixCols = 2;
 
 
-                  if(currentSum  biggestSum)
-                  {
-                    biggestSum = currentSum;
-                    bigCol = col;
-                    bigRow = row;
-                  }             
+      int maxSum = int.MinValue;
+      int biggestSumRow = 0;
+      int biggestSumCol = 0;
 
-             }
-         }
+     for (int row = 0; row <= matrix.GetLength(0) - subMatrixRows; row++)
+     {
+         for (int  col = 0; col <= matrix.GetLength(1) - subMatrixCols; col++)
+        {
+              int subMatrixSum = 0;
+              for (int subRow = 0; subRow < subMatrixRows; subRow++)
+              {
+                for (int subCol = 0; subCol < subMatrixCols; subCol++)
+                {
+                    subMatrixSum += matrix[row + subRow, col + subCol];
+                }
+              }
+        
+           if(subMatrixSum > maxSum)
+           {
+             maxSum = subMatrixSum;
+             biggestSumRow = row;
+             biggestSumCol = col;
+           }  
+            
+        
+        }
+     }
 
-              Console.WriteLine(${matrix[bigRow, bigCol]} {matrix[bigRow,bigCol + 1]}); 
-              Console.WriteLine(${matrix[bigRow + 1,bigCol]} {matrix[bigRow + 1, bigCol + 1]});
-              Console.WriteLine(biggestSum);
-       }
-
-     static int[] ParseArrayFromConsole(params char[] parseSymbols)
-     = Console.ReadLine()
-        .Split(parseSymbols,StringSplitOptions.RemoveEmptyEntries)
-        .Select(int.Parse)
-        .ToArray();
-     
+        for (int row = 0; row < subMatrixRows; row++) 
+        {
+            for (int col = 0; col < subMatrixRows; col++)
+            {
+                Console.Write(matrix[biggestSumRow + row, biggestSumCol + col] + " ");
+            }
+        
+          Console.WriteLine();
+        } 
 
 
-  
+
+
+     Console.WriteLine(maxSum);
+    }
+
+    static int[] ParseArrayFromConsole(params char[] parseSymbols)
+    => Console.ReadLine()
+       .Split(parseSymbols,StringSplitOptions.RemoveEmptyEntries)
+       .Select(int.Parse)
+       .ToArray();
+    
   }
 }
